@@ -1,0 +1,57 @@
+openapi: 3.0.3
+info:
+  title: Identity API
+  version: 1.0.0
+  description: API för att avgöra en användares identitet från ett givet bearer token
+
+paths:
+  /identity:
+     get:
+       tags: [IdentityController]
+       operationId: getIdentity
+       summary: Hämta information om identitet baserat på tillhandahållet bearer token
+       description: Returnerar identitet baserat på tillhandahållet bearer token. 
+       security:
+        - bearerAuth: []
+       responses:
+         '200':
+           description: Identitet hämtad OK
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/GetIdentityResponse'
+         '401':
+           description: Ogiltigt bearer token 
+         '500':
+           description: Internt serverfel
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    GetIdentityResponse:
+      type: object
+      required:
+        - identity
+      properties:
+        identity:
+          $ref: '#/components/schemas/Idtyp'
+
+    Idtyp:
+      type: object
+      properties:
+        typId:
+          type: string
+          description: Unikt ID som identifierar vilken typ av värde som anges
+        varde:
+          type: string
+          description: ID-värde som identifieras av typ
+      required:
+        - typId
+        - varde
+      example:
+        typId: "4c34906c-03d9-425f-9a1a-062ef6eb88c7"
+        varde: "19901010-1234"
